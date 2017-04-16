@@ -1,0 +1,37 @@
+parameters:
+    axelvnk.payum.mollie_api_key: EDITME
+    axelvnk.payum.api.mollie.class: Axelvnk\SyliusMolliePayumBundle\Payum\Api
+    axelvnk.payum.action.capture.class: Axelvnk\SyliusMolliePayumBundle\Payum\Action\CaptureAction
+    axelvnk.payum.action.status.class: Axelvnk\SyliusMolliePayumBundle\Payum\Action\StatusAction
+    axelvnk.payum.action.notify.class: Axelvnk\SyliusMolliePayumBundle\Payum\Action\NotifyAction
+    axelvnk.payum.action.resolve_next_route.class: Axelvnk\SyliusMolliePayumBundle\Payum\Action\ResolveNextRouteAction
+
+services:
+    axelvnk.payum.api.mollie:
+        class: '%axelvnk.payum.api.mollie.class%'
+        arguments:
+            - '%axelvnk.payum.mollie_api_key%'
+
+    axelvnk.payum.action.capture:
+        class: '%axelvnk.payum.action.capture.class%'
+        arguments:
+            - '@doctrine.orm.entity_manager'
+        tags:
+            - { name: axelvnk_payum.action, action: capture }
+
+    axelvnk.payum.action.status:
+        class: '%axelvnk.payum.action.status.class%'
+        arguments:
+            - '@doctrine.orm.entity_manager'
+        tags:
+            - { name: axelvnk_payum.action, action: status }
+
+    axelvnk.payum.action.notify:
+        class: '%axelvnk.payum.action.notify.class%'
+        tags:
+            - { name: axelvnk_payum.action, action: notify }
+
+    axelvnk.payum.action.resolve_next_route:
+        class: '%axelvnk.payum.action.resolve_next_route.class%'
+        tags:
+            - { name: axelvnk_payum.action, action: resolve_next_route }

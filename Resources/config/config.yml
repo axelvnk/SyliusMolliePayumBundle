@@ -1,0 +1,10 @@
+payum:
+    gateways:
+        mollie:
+            factory: core
+            apiKey: '%axelvnk.payum.mollie_api_key%'
+            payum.action.capture: '@axelvnk.payum.action.capture'
+            payum.action.notify: '@axelvnk.payum.action.notify'
+            payum.action.status: '@axelvnk.payum.action.status'
+            payum.action.resolve_next_route: '@axelvnk.payum.action.resolve_next_route'
+            payum.api: '@axelvnk.payum.api.mollie'
