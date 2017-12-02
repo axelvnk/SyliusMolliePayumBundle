@@ -44,7 +44,7 @@ class Api
                 'description' => $description,
                 'redirectUrl' => $redirectUrl,
                 'webhookUrl' => $webhookUrl,
-                'metadata' => ['payment_id' => $payment->getId()],
+                'metadata' => $this->getPaymentMetadata($payment),
                 'method' => strtolower($payment->getMethod()->getCode()),
             ]
         );
@@ -62,5 +62,17 @@ class Api
     public function getTransactionData($transactionId)
     {
         return $this->client->payments->get($transactionId);
+    }
+
+    /**
+     * @param PaymentInterface $payment
+     * @return array
+     */
+    protected function getPaymentMetadata(PaymentInterface $payment)
+    {
+        return [
+            'payment_id' => $payment->getId(),
+            'order_number' => $payment->getOrder()->getNumber(),
+        ];
     }
 }
