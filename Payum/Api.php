@@ -38,7 +38,7 @@ class Api
      */
     public function createTransaction($amount, $description, $redirectUrl, $webhookUrl, $payment)
     {
-        $payment = $this->client->payments->create(
+        $payment = $this->createPayment(
             [
                 'amount' => $amount,
                 'description' => $description,
@@ -62,6 +62,15 @@ class Api
     public function getTransactionData($transactionId)
     {
         return $this->client->payments->get($transactionId);
+    }
+
+    /**
+     * @param array $paymentData
+     * @return \stdClass
+     */
+    protected function createPayment(array $paymentData)
+    {
+        return $this->client->payments->create($paymentData);
     }
 
     /**
