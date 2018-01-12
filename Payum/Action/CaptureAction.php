@@ -12,6 +12,7 @@ use Payum\Core\Security\GenericTokenFactoryAwareInterface;
 use Payum\Core\Security\GenericTokenFactoryAwareTrait;
 use Sylius\Bundle\PayumBundle\Model\PaymentSecurityToken;
 use Sylius\Component\Core\Model\PaymentInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class CaptureAction extends BaseApiAwareAction implements GatewayAwareInterface, GenericTokenFactoryAwareInterface
 {
@@ -24,11 +25,18 @@ class CaptureAction extends BaseApiAwareAction implements GatewayAwareInterface,
     private $entityManager;
 
     /**
-     * @param EntityManager $entityManager
+     * @var TranslatorInterface
      */
-    public function __construct(EntityManager $entityManager)
+    private $translator;
+
+    /**
+     * @param EntityManager $entityManager
+     * @param TranslatorInterface $translator
+     */
+    public function __construct(EntityManager $entityManager, TranslatorInterface $translator)
     {
         $this->entityManager = $entityManager;
+        $this->translator = $translator;
     }
 
     /**
@@ -46,7 +54,7 @@ class CaptureAction extends BaseApiAwareAction implements GatewayAwareInterface,
 
         $transaction = $this->api->createTransaction(
             $payment->getAmount() / 100,
-            'Your order',
+            $this->getTransactionDescription($payment),
             $request->getToken()->getAfterUrl(),
             $notifyToken->getTargetUrl(),
             $payment
@@ -71,5 +79,25 @@ class CaptureAction extends BaseApiAwareAction implements GatewayAwareInterface,
             $request->getToken() instanceof PaymentSecurityToken &&
             $request->getToken()->getGatewayName() === Configuration::GATEWAY_NAME
         ;
+    }
+
+    /**
+     * @param PaymentInterface $payment
+     * @return string
+     */
+    protected function getTransactionDescription(PaymentInterface $payment) {
+        $key = 'sylius.mollie_payum_action.payment.description';
+        $parameters = [
+            '%order_number%' => $payment->getOrder()->getNumber(),
+            '%payment_method_name%' => $payment->getMethod()->getName(),
+            '%payment_method_description%' => $payment->getMethod()->getDescription(),
+        ];
+
+        $translation = $this->translator->trans($key, $parameters);
+        if ($translation === $key) {
+            $translation = 'Your order';
+        }
+
+        return $translation;
     }
 }

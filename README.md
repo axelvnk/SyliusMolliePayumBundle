@@ -85,10 +85,18 @@ parameters:
     axelvnk.payum.action.resolve_next_route.class: Your\Own\ResolveNextRouteAction
 ```
 
-## Nice to know..
-By default, Sylius moves an order's checkout state to completed before knowing if the payment is fulfilled or not. 
+## Change or translate the payment description
 
-In my ResolveNextRouteAction you can see that I redirect to the last step in the checkout process if the payment has failed for some reason. But Sylius removes a cart if the state is not longer new. So you will end up with an empty cart upon returning from Mollie if the payment has been cancelled or has failed. 
+Overload the translation key 'sylius.mollie_payum_action.payment.description'
+Parameters for this translation are:
+- %order_number%
+- %payment_method_name%
+- %payment_method_description%
+
+## Nice to know..
+By default, Sylius moves an order's checkout state to completed before knowing if the payment is fulfilled or not.
+
+In my ResolveNextRouteAction you can see that I redirect to the last step in the checkout process if the payment has failed for some reason. But Sylius removes a cart if the state is not longer new. So you will end up with an empty cart upon returning from Mollie if the payment has been cancelled or has failed.
 
 To prevent this from happening you should either fiddle with the state machine, or you simply do this in your custom CaptureAction :
 

@@ -16,6 +16,7 @@ services:
         class: '%axelvnk.payum.action.capture.class%'
         arguments:
             - '@doctrine.orm.entity_manager'
+            - '@translator'
         tags:
             - { name: axelvnk_payum.action, action: capture }
 
